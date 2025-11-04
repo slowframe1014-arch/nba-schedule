@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Denver Nuggets ┃ Los Angeles Lakers ┃ San Antonio Spurs ┃ Memphis Grizzlies ┃ Houston Rockets ┃ Detroit Pistons ┃ New York Knicks
+2025–26 Schedule</title>
+  <style>
+    :root{
+      --bg1:#06132d; --bg2:#0a1e44;
+      --orange:#FF5C00;      /* title + matchup */
+      --banana:#FFF200;      /* date + time */
+      --accent: var(--orange);
+      --accent-soft:#FFC38A;
+      --date: var(--banana);
+      --time: var(--banana);
+      --score:#8affff;
+      --home:#00f5b1;
+      --away:#ff5353;
+      --glass-hi: rgba(255,255,255,0.144);
+      --glass:    rgba(255,255,255,0.09);
+      --glass-lo: rgba(255,255,255,0.054);
+      --stroke:   rgba(255,255,255,0.252);
+      --stroke-soft: rgba(255,255,255,0.162);
+      --shadow: 0 30px 80px rgba(0,0,0,0.495), inset 0 1px 0 rgba(255,255,255,0.054);
+    }
+    html,body{height:100%;margin:0}
+    body{
+      font-family: inherit;
+      color: var(--accent);
+      background:
+        radial-gradient(1400px 900px at 10% -10%, rgba(255,255,255,0.063), transparent 60%),
+        radial-gradient(1200px 800px at 100% 0%, rgba(255,255,255,0.054), transparent 60%),
+        linear-gradient(180deg,var(--bg1),var(--bg2) 55%,var(--bg1));
+      -webkit-font-smoothing: antialiased;
+      text-align: center;
+      overflow-x: hidden; /* prevent accidental horizontal cut */
+    }
+    .wrap{max-width: 2400px; margin: 28px auto; padding: 0 24px}
+    header{
+  position: sticky; top: 0; z-index: 5;
+  background: linear-gradient(180deg, rgba(14,24,56,0.306), rgba(10,18,44,0.216));
+  backdrop-filter: blur(56px) saturate(190%);
+  border-bottom: 1px solid rgba(255,255,255,0.18);
+}
+    .header-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:12px 0}
+    h1{margin:0;display:inline-grid;grid-template-columns:1fr;gap:10px;grid-column:2;justify-self:center}
+    .teams,.season{
+      color:var(--accent);font-weight:900;letter-spacing:.3px;
+      text-shadow: 0 0 10px rgba(255,92,0,0.315), 0 0 24px rgba(255,92,0,0.252);
+    }
+    .teams{font-size: clamp(18px, 2vw, 24px)}
+    .season{font-size: clamp(18px, 2vw, 24px)}
+    .controls{display:flex;gap:10px;align-items:center}
+    .btn{
+  appearance:none; border:1px solid rgba(255,255,255,.18);
+  color:#fff; background: rgba(255,255,255,.02); /* extreme transparent */
+  backdrop-filter: blur(52px) saturate(185%);
+  padding: 10px 14px; border-radius: 12px; cursor:pointer;
+  box-shadow: 0 12px 28px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.10);
+}
+    .btn:hover{ background: rgba(255,255,255,.05) }
+    .month-title{font-size:18px;font-weight:900;color:#fff}
+    .card{
+  position: relative;
+  background: linear-gradient(180deg, rgba(255,255,255,0.072), rgba(255,255,255,0.045));
+  border: 1px solid rgba(255,255,255,0.234);
+  border-radius: 20px;
+  backdrop-filter: blur(96px) saturate(230%);
+  box-shadow: 0 38px 100px rgba(0,0,0,0.522), inset 0 1px 0 rgba(255,255,255,0.09);
+  padding: 24px 44px;
+  overflow: visible;
+}
+    .card::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  border-radius:20px;
+  background: radial-gradient(120% 70% at 50% 0%, rgba(255,255,255,0.234), rgba(255,255,255,0) 62%);
+  mix-blend-mode: screen;
+}
+.card::after{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="120" height="120" filter="url(%23n)" opacity="0.035"/></svg>');
+      mix-blend-mode: overlay;
+      border-radius: 20px;
+    }
+    /* 27" fixed grid with right spacing */
+    .month-grid{
+      width: 2260px; /* leave comfortable breathing room inside the card */
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(7, 312px); /* 7*312=2184 */
+      gap: 16px; /* 6 gaps=96; total content=2280 but we clamp width to 2260 to ensure no touch */
+      align-items: start;
+      justify-content: center;
+    }
+    .weekday{color:#fff;font-size:13px;padding:6px 0;font-weight:700;opacity:.9}
+    .day::before{
+  content:""; position:absolute; inset:0; border-radius:16px; pointer-events:none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.144), rgba(255,255,255,0) 42%);
+  mix-blend-mode: screen;
+}
+.day{
+  min-height: 760px;
+  border: 1px solid rgba(255,255,255,0.162);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(8,16,36,0.198), rgba(6,12,28,0.144));
+  backdrop-filter: blur(60px) saturate(185%);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.054);
+  position: relative;
+}
+    .date{
+      font-weight:900;font-size:12px;color:var(--date);letter-spacing:.2px;
+      text-shadow: 0 0 8px rgba(255,242,0,0.27), 0 0 16px rgba(255,242,0,0.198);
+    }
+    .game{
+  border-left:4px solid transparent; padding-left:12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.027));
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.09), 0 12px 28px rgba(0,0,0,0.252);
+  padding-top:10px; padding-bottom:10px;
+  position: relative;
+}
+    .home{border-left-color:var(--home)}
+    .away{border-left-color:var(--away)}
+    .row{
+      display:flex; gap:12px; justify-content:center; align-items:center;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.5;
+      font-weight:900;
+    }
+    .t{
+      font-variant-numeric: tabular-nums; color: var(--time);
+      text-shadow: 0 0 10px rgba(255,242,0,0.27), 0 0 18px rgba(255,242,0,0.198);
+    }
+    .matchup{
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(255,92,0,0.252), 0 0 18px rgba(255,92,0,0.18);
+    }
+    .scoreline{
+      margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+      color: var(--score);
+      font-weight: 900;
+      text-shadow: 0 0 12px rgba(126,240,255,0.315);
+    }
+    .scoreline strong{font-weight: 900; color: inherit; text-shadow: 0 0 14px rgba(255,255,255,0.315)}
+    .game::before{
+  content:""; position:absolute; left:0; right:0; top:0; height:1px; border-radius:12px; pointer-events:none;
+  background: linear-gradient(90deg, rgba(255,255,255,0.225), rgba(255,255,255,0) 12%, rgba(255,255,255,0) 88%, rgba(255,255,255,0.225));
+  mix-blend-mode: screen;
+}
+.chip{
+  margin:10px auto 4px auto; width:fit-content; padding:5px 12px; border-radius:999px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.162), rgba(255,255,255,0.09));
+  border:1px solid rgba(255,255,255,0.234);
+  color:#cdeaff; font-size:11px; letter-spacing:.7px; font-weight:800;
+  box-shadow: 0 16px 34px rgba(0,0,0,0.27), inset 0 1px 0 rgba(255,255,255,0.108);
+}
+    *,*::before,*::after{box-sizing:border-box}
+    .debug{position:fixed;right:12px;top:12px;z-index:9999;max-width:460px;max-height:60vh;overflow:auto;
+      font:12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;background:rgba(0,0,0,0.54);
+      color:#ffe1b3;border:1px solid rgba(255,255,255,0.27);border-radius:10px;padding:10px;backdrop-filter: blur(10px);display:none}
+    .debug hr{border:0;border-top:1px solid rgba(255,255,255,0.18)}
+  
+    .title-row{
+  display:grid;
+  grid-template-columns: 1fr auto 1fr; /* left spacer | centered season | right controls */
+  align-items:center;
+  gap:20px;
+  width:100%;
+}
+.title-row .season{ grid-column:2; justify-self:center; }
+.title-row .controls{ grid-column:3; justify-self:end; }
+    .controls{display:flex;gap:10px;align-items:center}
+    
+    .team-chip{display:inline-flex;align-items:center;gap:6px}
+    .logo{
+  height: 1em;
+  width: auto;
+  display:inline-block;
+  vertical-align:baseline;
+  object-fit:contain;
+  filter:drop-shadow(0 0 6px rgba(0,0,0,.35));
+}
+    .team-name{display:inline-block}
+    @media (max-width: 768px){
+  .logo{
+    height: 1em;
+    width: auto;
+  }
+    }
+    </style>
+
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="header-inner">
+      <h1>
+        <span class="teams"><span class="team-chip"><img class="logo" alt="Denver Nuggets logo" src="https://cdn.nba.com/logos/nba/1610612743/global/L/logo.svg"/><span class="team-name">Denver Nuggets</span></span> ┃ <span class="team-chip"><img class="logo" alt="Los Angeles Lakers logo" src="https://cdn.nba.com/logos/nba/1610612747/global/L/logo.svg"/><span class="team-name">Los Angeles Lakers</span></span> ┃ <span class="team-chip"><img class="logo" alt="San Antonio Spurs logo" src="https://cdn.nba.com/logos/nba/1610612759/global/L/logo.svg"/><span class="team-name">San Antonio Spurs</span></span> ┃ <span class="team-chip"><img class="logo" alt="Memphis Grizzlies logo" src="https://cdn.nba.com/logos/nba/1610612763/global/L/logo.svg"/><span class="team-name">Memphis Grizzlies</span></span> ┃ <span class="team-chip"><img class="logo" alt="Houston Rockets logo" src="https://cdn.nba.com/logos/nba/1610612745/global/L/logo.svg"/><span class="team-name">Houston Rockets</span></span> ┃ <span class="team-chip"><img class="logo" alt="Detroit Pistons logo" src="https://cdn.nba.com/logos/nba/1610612765/global/L/logo.svg"/><span class="team-name">Detroit Pistons</span></span> ┃ <span class="team-chip"><img class="logo" alt="New York Knicks logo" src="https://cdn.nba.com/logos/nba/1610612752/global/L/logo.svg"/><span class="team-name">New York Knicks</span></span></span>
+        <div class="title-row">
+          <span class="season">2025–26 Schedule</span>
+          <div class="controls">
+            <button class="btn" id="prev">◀ 上一月</button>
+            <div id="monthLabel" class="month-title">Loading…</div>
+            <button class="btn" id="next">下一月 ▶</button>
+          </div>
+        </div>
+      </h1>
+    </div>
+  </header>
+  <div id="calendar" class="card"></div>
+</div>
+<div id="dbg" class="debug">🔎 <b>DEBUG</b>（?debug=1 顯示）<hr></div>
+<script>
+(async function(){
+  const DEBUG = new URLSearchParams(location.search).has('debug');
+  const $dbg = document.getElementById('dbg');
+  if(DEBUG) $dbg.style.display='block';
+  const log = (msg, lvl='log') => {
+    if(!DEBUG) return;
+    const line = document.createElement('div');
+    line.textContent = (lvl==='error'?'🔴 ':lvl==='warn'?'🟡 ':'🟢 ') + msg;
+    $dbg.appendChild(line);
+    (console[lvl]||console.log)(msg);
+  };
+  const WORKER_BASE = "https://stock.slowframe1014.workers.dev";
+  const prox = (u)=> `${WORKER_BASE}/nba?url=${encodeURIComponent(u)}`;
+  const ESPN_SCOREBOARD = (ymd) => `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${ymd}`;
+  const TEAMS = ["DEN","LAL","SAS","MEM","HOU","DET","NYK"];
+  const TEAM_SET = new Set(TEAMS);
+  const ALT = { "PHO":"PHX", "SA":"SAS", "NO":"NOP", "WSH":"WAS", "NY":"NYK" };
+  const pad2 = n => String(n).padStart(2,'0');
+  function toTPE(dateIso){ const ms = Date.parse(dateIso); return new Date(ms + 8*60*60*1000); }
+  function ymdTPE(dateIso){ const d = toTPE(dateIso); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; }
+  function hhmmTPE(dateIso){ const d = toTPE(dateIso); return `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}`; }
+  async function fetchJSON(u){
+    const url = prox(u);
+    let res, text;
+    try{ res = await fetch(url); text = await res.text(); }
+    catch(e){ log(`fetch 失敗：${u} — ${String(e)}`,'error'); return null; }
+    if(!res.ok){ log(`HTTP ${res.status}：${u}`,'error'); return null; }
+    try{ return JSON.parse(text); }
+    catch(e){ log(`非 JSON 回應（len=${text?.length||0}）：${u}`,'error'); return null; }
+  }
+  const espnCache = new Map();
+  async function getEspn(ymdET){
+    if(espnCache.has(ymdET)) return espnCache.get(ymdET);
+    const j = await fetchJSON(ESPN_SCOREBOARD(ymdET));
+    const evs = j?.events || j?.leagues?.flatMap(l=>l.events||[]) || [];
+    log(`ESPN ${ymdET} events=${evs.length}`);
+    espnCache.set(ymdET, evs);
+    return evs;
+  }
+  function buildMonthMatrix(year, month){
+    const first = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    const startWeekday = (first.getDay()+6)%7;
+    const leading = startWeekday;
+    const totalCells = Math.ceil((leading + daysInMonth)/7) * 7;
+    const cells = [];
+    for(let i=0;i<totalCells;i++){
+      if(i < leading || i >= leading + daysInMonth){ cells.push(null); }
+      else { cells.push(new Date(year, month, i-leading+1)); }
+    }
+    return cells;
+  }
+  function ymdETfromDate(d){
+    return new Intl.DateTimeFormat('en-CA',{ timeZone:'America/New_York', year:'numeric', month:'2-digit', day:'2-digit' }).format(d).replace(/-/g,'');
+  }
+  async function renderMonth(ym){
+    const [yy, mm] = ym.split('-').map(Number);
+    document.getElementById('monthLabel').textContent = `${yy}年${String(mm).padStart(2,'0')}月`;
+    const cells = buildMonthMatrix(yy, mm-1);
+    const etDays = new Set();
+    for(const c of cells){
+      if(!c) continue;
+      etDays.add(ymdETfromDate(c));
+      const prev = new Date(c.getTime()-24*60*60*1000);
+      etDays.add(ymdETfromDate(prev));
+    }
+    await Promise.all([...etDays].map(k => getEspn(k)));
+    const grid = document.createElement('div'); grid.className='month-grid';
+    ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(w=>{
+      const el=document.createElement('div'); el.className='weekday'; el.textContent=w; grid.appendChild(el);
+    });
+    for(const cell of cells){
+      const box = document.createElement('div'); box.className='day';
+      if(cell){
+        const key = `${cell.getFullYear()}-${pad2(cell.getMonth()+1)}-${pad2(cell.getDate())}`;
+        const dateSpan = document.createElement('div'); dateSpan.className='date'; dateSpan.textContent = key;
+        box.appendChild(dateSpan);
+        const etKey1 = ymdETfromDate(cell);
+        const etKey0 = ymdETfromDate(new Date(cell.getTime()-24*60*60*1000));
+        const events = [ ...(espnCache.get(etKey1)||[]), ...(espnCache.get(etKey0)||[]) ];
+        const games = [];
+        for(const ev of events){
+          const comp = ev.competitions?.[0]; if(!comp) continue;
+          const teams = comp.competitors||[];
+          const h = teams.find(t=>t.homeAway==='home');
+          const a = teams.find(t=>t.homeAway==='away');
+          let home = (h?.team?.abbreviation||'').toUpperCase();
+          let away = (a?.team?.abbreviation||'').toUpperCase();
+          home = ALT[home] || home;
+          away = ALT[away] || away;
+          if(!(TEAM_SET.has(home) || TEAM_SET.has(away))) continue;
+          const start = comp.startDate;
+          const tpeDate = start ? ymdTPE(start) : null;
+          if(tpeDate !== key) continue;
+          const timeStr = start ? hhmmTPE(start) : '--:--';
+          let scoreHtml = '—';
+          if(a?.score!=null && h?.score!=null){
+            const H = Number(h.score), A = Number(a.score);
+            const aTxt = A>H ? `<strong>${away} ${A}🔥</strong>` : `${away} ${A}`;
+            const hTxt = H>A ? `<strong>${home} ${H}🔥</strong>` : `${home} ${H}`;
+            scoreHtml = `${aTxt} – ${hTxt}`;
+          }
+          games.push({home,away,timeStr,scoreHtml});
+        }
+        games.sort((x,y)=> x.timeStr.localeCompare(y.timeStr));
+        games.forEach((g,i)=>{
+          if(i>0){ const chip=document.createElement('div'); chip.className='chip'; chip.textContent=`GAME ${i+1}`; box.appendChild(chip); }
+          const el = document.createElement('div'); el.className = 'game ' + (TEAM_SET.has(g.home)?'home':'away');
+          const row = document.createElement('div'); row.className='row';
+          row.innerHTML = `<span class="t">${g.timeStr}</span> <span class="matchup">${g.away} @ ${g.home}</span>`;
+          const score = document.createElement('div'); score.className='scoreline'; score.innerHTML = g.scoreHtml;
+          el.appendChild(row); el.appendChild(score);
+          box.appendChild(el);
+        });
+      }
+      grid.appendChild(box);
+    }
+    const container = document.getElementById('calendar');
+    container.innerHTML='';
+    container.appendChild(grid);
+  }
+  const months = [];
+  for(let y=2025;y<=2026;y++){
+    for(let m=1;m<=12;m++){
+      if((y===2025 && m>=10) || (y===2026 && m<=6)) months.push(`${y}-${pad2(m)}`);
+    }
+  }
+  let idx = 0;
+  await renderMonth(months[idx]);
+  document.getElementById('prev').onclick = async ()=>{ idx = (idx - 1 + months.length) % months.length; await renderMonth(months[idx]); };
+  document.getElementById('next').onclick = async ()=>{ idx = (idx + 1) % months.length; await renderMonth(months[idx]); };
+})();
+</script>
+</body>
+</html>
